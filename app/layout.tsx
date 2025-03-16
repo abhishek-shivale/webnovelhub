@@ -5,6 +5,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Sidebar from "@/components/sidebar";
+import { Analytics } from '@vercel/analytics/next';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -164,11 +166,11 @@ export const metadata: Metadata = {
     capable: true,
   },
 
-  verification: {
-    google: "google-site-verification-code",
-    yandex: "yandex-verification-code",
-    yahoo: "yahoo-verification-code",
-  },
+  // verification: {
+  //   google: "google-site-verification-code",
+  //   yandex: "yandex-verification-code",
+  //   yahoo: "yahoo-verification-code",
+  // },
 
   // Theme color
   themeColor: [
@@ -208,7 +210,7 @@ export default function RootLayout({
         >
           <div className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 p-4 md:p-6 pt-16 md:pt-6">{children}</main>
+            <main className="flex-1 p-4 md:p-6 pt-16 md:pt-6">{children}<Analytics /></main>
           </div>
         </ThemeProvider>
       </body>
