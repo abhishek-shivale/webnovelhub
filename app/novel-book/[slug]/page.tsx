@@ -34,14 +34,12 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-// Generate dynamic metadata for each novel page
 export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
+  { params }: {params: Promise<{slug: string}>},
 ): Promise<Metadata> {
-  // Fetch novel data for metadata
   try {
-    const novel = await fetchNovelDetails(params.slug, false);
+    const { slug }  = await params
+    const novel = await fetchNovelDetails(slug, false);
 
     if (!novel) {
       return {
@@ -52,7 +50,6 @@ export async function generateMetadata(
 
     const { novelData, description } = novel;
 
-    // Create a short description (truncate if needed)
     const shortDescription =
       description.length > 160
         ? `${description.substring(0, 157)}...`
@@ -65,7 +62,7 @@ export async function generateMetadata(
         title: novelData.title,
         description: shortDescription,
         type: "book",
-        url: `/novel-book/${params.slug}`,
+        url: `/novel-book/${slug}`,
         images: [
           {
             url: novelData.image || "/image.png",
@@ -84,7 +81,7 @@ export async function generateMetadata(
         images: [novelData.image || "/image.png"],
       },
       alternates: {
-        canonical: `/novel-book/${params.slug}`,
+        canonical: `/novel-book/${slug}`,
       },
       keywords: [...(novelData.genres || []), ...(novelData.tags || [])].join(
         ", "
@@ -99,7 +96,6 @@ export async function generateMetadata(
   }
 }
 
-// Loading component
 function NovelPageSkeleton() {
   return (
     <div className="container mx-auto my-10">
@@ -130,7 +126,6 @@ function NovelPageSkeleton() {
   );
 }
 
-// Error component
 function NovelError({ error }: { error: string }) {
   return (
     <div className="container mx-auto text-center py-12">
@@ -139,12 +134,23 @@ function NovelError({ error }: { error: string }) {
   );
 }
 
-// Novel content component
-function NovelContent({ novel, slug }: { novel: NovelData; slug: string }) {
-  const { novelData, description, allChapters } = novel;
+// Novel content wrapper with error handling
+export default async function NovelContentWrapper({
+  params
+}: {
+  params: Promise<{ slug: string; chapters: string }>
+}) {
+  try {
+    const { slug } = await params
+    const novel = await fetchNovelDetails(slug, true);
+    if (!novel) {
+      return <div>Novel not found</div>;
+    }
+    const { novelData, description, allChapters } = novel;
 
-  return (
-    <div className="container mx-auto my-10">
+    return (
+      <Suspense fallback={<NovelPageSkeleton />}>
+        <div className="container mx-auto my-10">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           <div className="flex flex-col md:flex-row gap-6 mb-8">
@@ -200,7 +206,7 @@ function NovelContent({ novel, slug }: { novel: NovelData; slug: string }) {
 
               {novelData.genres && novelData.genres.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {novelData.genres.map((genre, index) => (
+                  {novelData.genres && novelData.genres.map((genre: string, index: number) => (
                     <Link
                       key={index}
                       href={`/genre/${genre
@@ -225,32 +231,9 @@ function NovelContent({ novel, slug }: { novel: NovelData; slug: string }) {
         </div>
       </div>
     </div>
-  );
-}
-
-// Novel content wrapper with error handling
-export default async function NovelContentWrapper({ slug }: { slug: string }) {
-  try {
-    const novel = await fetchNovelDetails(slug, true);
-
-    if (!novel) {
-      return <div>Novel not found</div>;
-    }
-
-    return (
-      <Suspense fallback={<NovelPageSkeleton />}>
-        <NovelContent novel={novel} slug={slug} />
       </Suspense>
     );
   } catch (error) {
     return <NovelError error={(error as Error).message} />;
   }
 }
-
-// function NovelPage({ params }: { params: { slug: string } }) {
-//   return (
-//     <Suspense fallback={<NovelPageSkeleton />}>
-//       <NovelContentWrapper slug={params.slug} />
-//     </Suspense>
-//   );
-// }

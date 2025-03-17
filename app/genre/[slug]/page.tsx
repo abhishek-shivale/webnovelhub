@@ -88,13 +88,40 @@ export async function generateMetadata(
   };
 }
 
-async function GenreContent({ slug }: { slug: string }) {
-  try {
-    const data: GenreData = await fetchGenreData(slug);
-    const genreName = formatGenreName(slug);
 
-    return (
-      <>
+function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <Skeleton key={i} className="h-[300px] w-full" />
+      ))}
+    </div>
+  );
+}
+
+export default async function GenrePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const genreName = formatGenreName((await params).slug);
+  const data: GenreData = await fetchGenreData((await params).slug);
+
+
+  return (
+    <div className="container mx-auto">
+      <Suspense
+        fallback={
+          <>
+            <h1 className="text-2xl font-bold mb-2">{genreName}</h1>
+            <p className="text-muted-foreground mb-8">
+              Novels in the {genreName} genre
+            </p>
+            <LoadingSkeleton />
+          </>
+        }
+      >
+       <>
         <h1 className="text-2xl font-bold mb-2">{genreName}</h1>
         <p className="text-muted-foreground mb-8">
           Novels in the {genreName} genre
@@ -114,50 +141,6 @@ async function GenreContent({ slug }: { slug: string }) {
           </div>
         )}
       </>
-    );
-  } catch (error) {
-    console.error(error);
-    return (
-      <div className="container mx-auto text-center py-12">
-        <p className="text-red-500">
-          Error loading genre data. Please try again later.
-        </p>
-      </div>
-    );
-  }
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
-        <Skeleton key={i} className="h-[300px] w-full" />
-      ))}
-    </div>
-  );
-}
-
-export default async function GenrePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const genreName = formatGenreName((await params).slug);
-
-  return (
-    <div className="container mx-auto">
-      <Suspense
-        fallback={
-          <>
-            <h1 className="text-2xl font-bold mb-2">{genreName}</h1>
-            <p className="text-muted-foreground mb-8">
-              Novels in the {genreName} genre
-            </p>
-            <LoadingSkeleton />
-          </>
-        }
-      >
-        <GenreContent slug={(await params).slug} />
       </Suspense>
     </div>
   );
