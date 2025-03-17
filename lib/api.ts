@@ -20,6 +20,7 @@ export async function fetchHomeData() {
 export async function fetchGenreData(genre: string) {
   try {
     const response = await api.get(`/${genre}`);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error(`Error fetching genre data for ${genre}:`, error);
@@ -31,6 +32,7 @@ export async function fetchNovelDetails(name: string, all = false) {
   try {
     const url = `/novel-book/${name}${all ? "?all=true" : ""}`;
     const response = await api.get(url);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error(`Error fetching novel details for ${name}:`, error);
@@ -42,6 +44,7 @@ export async function fetchChapterContent(novelName: string, chapter: string) {
   try {
     const url = `/novel-book/${novelName}/${chapter}`;
     const response = await api.get(url);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error(`Error fetching chapter content for ${novelName}, chapter ${chapter}:`, error);
