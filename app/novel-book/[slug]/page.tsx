@@ -1,38 +1,38 @@
-import { Suspense } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Star, BookOpen, Library } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import ChapterList from "@/components/chapter-list"
-import { Skeleton } from "@/components/ui/skeleton"
-import { fetchNovelDetails } from "@/lib/api"
-import type { Metadata, ResolvingMetadata } from "next"
+import { Suspense } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Star, BookOpen, Library } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ChapterList from "@/components/chapter-list";
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetchNovelDetails } from "@/lib/api";
+import type { Metadata, ResolvingMetadata } from "next";
 
 type NovelData = {
   novelData: {
-    title: string
-    author: string
-    image: string
-    rating: string
-    reviewCount: string
-    status: string
-    publisher: string
-    year: string
-    genres: string[]
-    tags: string[]
-    readNowLink: string
-  }
-  description: string
+    title: string;
+    author: string;
+    image: string;
+    rating: string;
+    reviewCount: string;
+    status: string;
+    publisher: string;
+    year: string;
+    genres: string[];
+    tags: string[];
+    readNowLink: string;
+  };
+  description: string;
   allChapters: {
-    title: string
-    link: string
-  }[]
-}
+    title: string;
+    link: string;
+  }[];
+};
 
 type Props = {
-  params: { slug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 // Generate dynamic metadata for each novel page
 export async function generateMetadata(
@@ -41,21 +41,22 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   // Fetch novel data for metadata
   try {
-    const novel = await fetchNovelDetails(params.slug, false)
+    const novel = await fetchNovelDetails(params.slug, false);
 
     if (!novel) {
       return {
         title: "Novel Not Found",
         description: "The requested novel could not be found.",
-      }
+      };
     }
 
-    const { novelData, description } = novel
+    const { novelData, description } = novel;
 
     // Create a short description (truncate if needed)
-    const shortDescription = description.length > 160
-      ? `${description.substring(0, 157)}...`
-      : description
+    const shortDescription =
+      description.length > 160
+        ? `${description.substring(0, 157)}...`
+        : description;
 
     return {
       title: `${novelData.title} by ${novelData.author} | WebNovelHub - Read Online`,
@@ -63,11 +64,11 @@ export async function generateMetadata(
       openGraph: {
         title: novelData.title,
         description: shortDescription,
-        type: 'book',
+        type: "book",
         url: `/novel-book/${params.slug}`,
         images: [
           {
-            url: novelData.image || '/image.png',
+            url: novelData.image || "/image.png",
             width: 800,
             height: 1200,
             alt: `Cover for ${novelData.title}`,
@@ -77,22 +78,24 @@ export async function generateMetadata(
         tags: [...(novelData.genres || []), ...(novelData.tags || [])],
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: novelData.title,
         description: shortDescription,
-        images: [novelData.image || '/image.png'],
+        images: [novelData.image || "/image.png"],
       },
       alternates: {
         canonical: `/novel-book/${params.slug}`,
       },
-      keywords: [...(novelData.genres || []), ...(novelData.tags || [])].join(', '),
-    }
+      keywords: [...(novelData.genres || []), ...(novelData.tags || [])].join(
+        ", "
+      ),
+    };
   } catch (error) {
-    console.error("Error generating metadata:", error)
+    console.error("Error generating metadata:", error);
     return {
       title: "Novel Details",
       description: "Read the latest novels online.",
-    }
+    };
   }
 }
 
@@ -124,7 +127,7 @@ function NovelPageSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Error component
@@ -133,12 +136,12 @@ function NovelError({ error }: { error: string }) {
     <div className="container mx-auto text-center py-12">
       <p className="text-red-500">{error}</p>
     </div>
-  )
+  );
 }
 
 // Novel content component
-function NovelContent({ novel, slug }: { novel: NovelData, slug: string }) {
-  const { novelData, description, allChapters } = novel
+function NovelContent({ novel, slug }: { novel: NovelData; slug: string }) {
+  const { novelData, description, allChapters } = novel;
 
   return (
     <div className="container mx-auto my-10">
@@ -160,7 +163,9 @@ function NovelContent({ novel, slug }: { novel: NovelData, slug: string }) {
 
             <div className="flex-1">
               <h1 className="text-2xl font-bold mb-1">{novelData.title}</h1>
-              <p className="text-sm text-muted-foreground mb-3">by {novelData.author}</p>
+              <p className="text-sm text-muted-foreground mb-3">
+                by {novelData.author}
+              </p>
 
               <div className="flex flex-wrap items-center gap-4 mb-4 text-sm">
                 <div className="flex items-center">
@@ -174,7 +179,9 @@ function NovelContent({ novel, slug }: { novel: NovelData, slug: string }) {
                   <span>{allChapters.length} Chapters</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">{novelData.status}</span>
+                  <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">
+                    {novelData.status}
+                  </span>
                 </div>
               </div>
 
@@ -196,7 +203,9 @@ function NovelContent({ novel, slug }: { novel: NovelData, slug: string }) {
                   {novelData.genres.map((genre, index) => (
                     <Link
                       key={index}
-                      href={`/genre/${genre.toLowerCase().replace(/\s+/g, "-")}`}
+                      href={`/genre/${genre
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")}`}
                       className="px-2 py-1 bg-secondary text-secondary-foreground rounded-md text-xs hover:bg-secondary/80"
                     >
                       {genre}
@@ -216,28 +225,32 @@ function NovelContent({ novel, slug }: { novel: NovelData, slug: string }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Novel content wrapper with error handling
-async function NovelContentWrapper({ slug }: { slug: string }) {
+export default async function NovelContentWrapper({ slug }: { slug: string }) {
   try {
-    const novel = await fetchNovelDetails(slug, true)
+    const novel = await fetchNovelDetails(slug, true);
 
     if (!novel) {
-      return <div>Novel not found</div>
+      return <div>Novel not found</div>;
     }
 
-    return <NovelContent novel={novel} slug={slug} />
+    return (
+      <Suspense fallback={<NovelPageSkeleton />}>
+        <NovelContent novel={novel} slug={slug} />
+      </Suspense>
+    );
   } catch (error) {
-    return <NovelError error={(error as Error).message} />
+    return <NovelError error={(error as Error).message} />;
   }
 }
 
-export default function NovelPage({ params }: { params: { slug: string } }) {
-  return (
-    <Suspense fallback={<NovelPageSkeleton />}>
-      <NovelContentWrapper slug={params.slug} />
-    </Suspense>
-  )
-}
+// function NovelPage({ params }: { params: { slug: string } }) {
+//   return (
+//     <Suspense fallback={<NovelPageSkeleton />}>
+//       <NovelContentWrapper slug={params.slug} />
+//     </Suspense>
+//   );
+// }
