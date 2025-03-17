@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Star, BookOpen } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { MEDIA_BASE_URL } from "@/lib/api"
+import { MEDIA_BASE_URL } from "@/lib/utils"
 
 type NovelCardProps = {
   novel: {

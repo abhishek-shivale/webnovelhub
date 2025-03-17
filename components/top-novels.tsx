@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { MEDIA_BASE_URL } from "@/lib/api"
+import { MEDIA_BASE_URL } from "@/lib/utils"
 
 type Novel = {
   title: string

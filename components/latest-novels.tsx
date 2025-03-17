@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { MEDIA_BASE_URL } from "@/lib/api"
+import { MEDIA_BASE_URL } from "@/lib/utils"
 
 type Novel = {
   title: string

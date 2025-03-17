@@ -147,7 +147,6 @@ export default async function NovelContentWrapper({
       return <div>Novel not found</div>;
     }
     const { novelData, description, allChapters } = novel;
-    console.log(novel)
 
     return (
       <Suspense fallback={<NovelPageSkeleton />}>
