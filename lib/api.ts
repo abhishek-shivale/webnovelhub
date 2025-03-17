@@ -21,7 +21,7 @@ export async function fetchGenreData(genre: string) {
   try {
     const response = await api.get(`/${genre}`);
     const status = await api.get('/status/health')
-    console.log(status)
+    console.log(status, response)
     return response.data;
   } catch (error) {
     console.error(`Error fetching genre data for ${genre}:`, error);
