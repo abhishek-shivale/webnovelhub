@@ -105,8 +105,8 @@ export default async function GenrePage({
   params: Promise<{ slug: string }>;
 }) {
   const genreName = formatGenreName((await params).slug);
-  const data: GenreData = await fetchGenreData((await params).slug);
-
+  const data = await fetchGenreData((await params).slug);
+  console.log(data)
 
   return (
     <div className="container mx-auto">
@@ -129,6 +129,7 @@ export default async function GenrePage({
 
         {data?.genre && data.genre.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* @ts-ignore */}
             {data.genre.map((novel, index) => (
               <NovelCard key={index} novel={novel} />
             ))}
