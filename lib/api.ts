@@ -12,6 +12,7 @@ export async function fetchHomeData() {
 
 export async function fetchGenreData(genre: string) {
   const response = await fetch(`${API_BASE_URL}/${genre}`)
+  console.log("response genre:", response)
   if (!response.ok) {
     throw new Error(`Failed to fetch genre: ${genre}`)
   }
@@ -21,6 +22,7 @@ export async function fetchGenreData(genre: string) {
 export async function fetchNovelDetails(name: string, all = false) {
   const url = `${API_BASE_URL}/novel-book/${name}${all ? "?all=true" : ""}`
   const response = await fetch(url)
+  console.log("response novel_details:", response)
   if (!response.ok) {
     throw new Error(`Failed to fetch novel: ${name}`)
   }
