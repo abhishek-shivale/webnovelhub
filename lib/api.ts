@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8787"
+const API_BASE_URL = "https://api.webnovelhub.online"
 export const MEDIA_BASE_URL = API_BASE_URL
 
 
