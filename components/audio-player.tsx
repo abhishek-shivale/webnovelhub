@@ -84,7 +84,7 @@ export default function AudioPlayer({ chapter }: AudioPlayerProps) {
     // Fetch available voices
     const fetchVoices = async () => {
       try {
-        const response = await fetch("http://localhost:8787/api/tts/voices")
+        const response = await fetch("https://api.webnovelhub.online/api/tts/voices")
         const data = await response.json()
         setVoices(data)
       } catch (error) {
@@ -250,7 +250,7 @@ export default function AudioPlayer({ chapter }: AudioPlayerProps) {
         audioRef.current.src = '';
 
         // Set up streaming audio
-        const response = await fetch("http://localhost:8787/api/tts", {
+        const response = await fetch("https://api.webnovelhub.online/api/tts", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

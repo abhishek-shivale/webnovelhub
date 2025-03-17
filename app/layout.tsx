@@ -172,14 +172,6 @@ export const metadata: Metadata = {
   //   yahoo: "yahoo-verification-code",
   // },
 
-  // Theme color
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#121212" },
-  ],
-
-  // Manifest file
-  manifest: "https://webnovelhub.online/manifest.json",
 
   // Icons
   icons: {

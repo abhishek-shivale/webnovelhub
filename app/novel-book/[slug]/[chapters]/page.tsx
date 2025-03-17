@@ -161,20 +161,21 @@ function ChapterSkeleton() {
 export default async function ChapterPage({
   params
 }: {
-  params: { slug: string; chapters: string }
+  params: Promise<{ slug: string; chapters: string }>
 }) {
+  const {slug, chapters} = await params;
   // SSR data fetching
   let chapter: ChapterData | null = null;
   let error: string | null = null;
 
   try {
-    chapter = await fetchChapterContent(params.slug, params.chapters);
+    chapter = await fetchChapterContent(slug, chapters);
 
     // Update reading history on server
     if (chapter) {
       await updateReadingHistory(
-        params.slug,
-        params.chapters,
+        slug,
+        chapters,
         chapter.novel_title,
         chapter.chap_title
       );
@@ -185,7 +186,7 @@ export default async function ChapterPage({
   }
 
   // Get bookmark status
-  const bookmarked = await getBookmarkStatus(params.slug, params.chapters);
+  const bookmarked = await getBookmarkStatus(slug, chapters);
 
   // Calculate read time if chapter exists
   const estimatedReadTime = chapter ? calculateReadTime(chapter.content) : 0;
@@ -228,7 +229,7 @@ export default async function ChapterPage({
       <div className="sticky top-0 bg-background border-b z-10 py-1 px-2">
         <div className="container max-w-5xl mx-auto flex items-center justify-between">
           <Link
-            href={`/novel-book/${params.slug}`}
+            href={`/novel-book/${slug}`}
             className="text-sm hover:underline flex items-center"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
@@ -240,8 +241,8 @@ export default async function ChapterPage({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <form action="/api/bookmark" method="post">
-                    <input type="hidden" name="slug" value={params.slug} />
-                    <input type="hidden" name="chapter" value={params.chapters} />
+                    <input type="hidden" name="slug" value={slug} />
+                    <input type="hidden" name="chapter" value={chapters} />
                     <input type="hidden" name="action" value={bookmarked ? "remove" : "add"} />
                     <Button variant="ghost" size="sm" type="submit">
                       <Bookmark
@@ -262,7 +263,7 @@ export default async function ChapterPage({
                   <Button
                     variant="ghost"
                     size="sm"
-                    data-share-url={`${process.env.NEXT_PUBLIC_BASE_URL}/novel-book/${params.slug}/${params.chapters}`}
+                    data-share-url={`${process.env.NEXT_PUBLIC_BASE_URL}/novel-book/${slug}/${chapters}`}
                     data-share-title={`${chapter.chap_title} - ${chapter.novel_title}`}
                   >
                     <Share2 className="h-4 w-4" />
