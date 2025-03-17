@@ -7,6 +7,7 @@ export async function fetchHomeData() {
   if (!response.ok) {
     throw new Error("Failed to fetch home data")
   }
+  console.log(`${API_BASE_URL}/`, "response home:", await response.json())
   return response.json()
 }
 
@@ -15,7 +16,8 @@ export async function fetchGenreData(genre: string) {
   if (!response.ok) {
     throw new Error(`Failed to fetch genre: ${genre}`)
   }
-  return await response.json()
+  console.log(`${API_BASE_URL}/${genre}`, "response genre:", await response.json())
+  return response.json()
 }
 
 export async function fetchNovelDetails(name: string, all = false) {
@@ -24,7 +26,8 @@ export async function fetchNovelDetails(name: string, all = false) {
   if (!response.ok) {
     throw new Error(`Failed to fetch novel: ${name}`)
   }
-  return await response.json()
+  console.log(url, "response novel_details:", await response.json())
+  return response.json()
 }
 
 export async function fetchChapterContent(novelName: string, chapter: string) {
@@ -32,6 +35,7 @@ export async function fetchChapterContent(novelName: string, chapter: string) {
   if (!response.ok) {
     throw new Error(`Failed to fetch chapter: ${chapter}`)
   }
+  console.log(`${API_BASE_URL}/novel-book/${novelName}/${chapter}`, "response chapter:", await response.json())
   return response.json()
 }
 
